@@ -1,0 +1,41 @@
+@ATSAPPBACKEND_HostAddress = http://localhost:5132
+
+POST {{ATSAPPBACKEND_HostAddress}}/BasicGet/
+Accept: application/json
+
+###
+
+POST {{ATSAPPBACKEND_HostAddress}}/Candidate/
+Accept: application/json
+
+###
+
+POST {{ATSAPPBACKEND_HostAddress}}/Client/
+Accept: application/json
+
+###
+
+POST {{ATSAPPBACKEND_HostAddress}}/EmployerCompany/
+Accept: application/json
+
+###
+
+POST {{ATSAPPBACKEND_HostAddress}}/Employer/
+Accept: application/json
+
+###
+
+POST {{ATSAPPBACKEND_HostAddress}}/Implementation/
+Accept: application/json
+
+###
+
+POST {{ATSAPPBACKEND_HostAddress}}/Requirement/
+Accept: application/json
+
+###
+
+POST {{ATSAPPBACKEND_HostAddress}}/Submission/
+Accept: application/json
+
+###
