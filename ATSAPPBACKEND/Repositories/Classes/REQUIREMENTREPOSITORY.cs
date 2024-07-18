@@ -20,16 +20,16 @@ namespace ATSAPPBACKEND.Repositories.Classes
             {
                 if (requirement != null)
                 {
-                    requirement.req.REQUIREMENTCD = DateTime.Now;
-                    requirement.req.REQUIREMENTCT = DateTime.Now.TimeOfDay;
-                    requirement.req.ActiveFlag = ActiveDelete.Yes;
-                    requirement.req.DeleteFlag = ActiveDelete.No;
-                    await _dbContext.REQUIREMENTS.AddAsync(requirement.req);
+                    requirement.RequiredVisaExt.REQUIREMENTCD = DateTime.Now;
+                    requirement.RequiredVisaExt.REQUIREMENTCT = DateTime.Now.TimeOfDay;
+                    requirement.RequiredVisaExt.ActiveFlag = ActiveDelete.Yes;
+                    requirement.RequiredVisaExt.DeleteFlag = ActiveDelete.No;
+                    await _dbContext.REQUIREMENTS.AddAsync(requirement.RequiredVisaExt);
                     await _dbContext.SaveChangesAsync();
 
-                    var reqid = requirement.req.REQUIREMENTID;
+                    var reqid = requirement.RequiredVisaExt.REQUIREMENTID;
                     var rv = new REQUIREDVISA();
-                    foreach (var item in requirement.visas)
+                    foreach (var item in requirement.VisasList)
                     {
                         rv.REQUIREMENTID = reqid;
                         rv.VISAID = item.VISAID;
@@ -48,17 +48,17 @@ namespace ATSAPPBACKEND.Repositories.Classes
         public async Task<bool> DeleteREQUIREMENT(ReqVisa requirement)
         {
             KeyValue kv = new KeyValue();
-            kv.KEY1 = requirement.req.REQUIREMENTID;
+            kv.KEY1 = requirement.RequiredVisaExt.REQUIREMENTID;
             try
             {
                 var emp = await GetById(kv);
                 if (emp != null)
                 {
-                    requirement.req.REQUIREMENTUD = DateTime.Now;
-                    requirement.req.REQUIREMENTUT = DateTime.Now.TimeOfDay;
-                    requirement.req.ActiveFlag = ActiveDelete.No;
-                    requirement.req.DeleteFlag = ActiveDelete.Yes;
-                    _dbContext.Entry<REQUIREMENT>(requirement.req).State = EntityState.Modified;
+                    requirement.RequiredVisaExt.REQUIREMENTUD = DateTime.Now;
+                    requirement.RequiredVisaExt.REQUIREMENTUT = DateTime.Now.TimeOfDay;
+                    requirement.RequiredVisaExt.ActiveFlag = ActiveDelete.No;
+                    requirement.RequiredVisaExt.DeleteFlag = ActiveDelete.Yes;
+                    _dbContext.Entry<REQUIREMENT>(requirement.RequiredVisaExt).State = EntityState.Modified;
                     return await _dbContext.SaveChangesAsync() > 0;
                 }
                 else { return false; }
@@ -66,13 +66,13 @@ namespace ATSAPPBACKEND.Repositories.Classes
             catch (Exception ex) { return false; }
         }
 
-        public async Task<REQUIREMENTEXT> GetREQUIREMENTBYID(KeyValue kv)
+        public async Task<ReqVisa> GetREQUIREMENTBYID(KeyValue kv)
         {
             var req = await GetById(kv);
             return req;
         }
 
-        public async Task<List<REQUIREMENTEXT>> GetREQUIREMENTBYNAME(KeyValue kv)
+        public async Task<List<ReqVisa>> GetREQUIREMENTBYNAME(KeyValue kv)
         {
             try
             {
@@ -84,40 +84,52 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                   join cnty in _dbContext.COUNTRIES on req.REQUIREMENTLOCCOUNTRY equals cnty.COUNTRYID
                                   join sta in _dbContext.STATES on req.REQUIREMENTLOCSTATE equals sta.STATEID
                                   join cty in _dbContext.CITIES on req.REQUIREMENTLOCCITY equals cty.CITYID
+                                  join reV in _dbContext.REQUIREDVISAS on req.REQUIREMENTID equals reV.REQUIREMENTID
+                                  join vis in _dbContext.VISAS on reV.REQUIREDVISAID equals vis.VISAID
 
                                   where req.REQUIREMENTTITLE.Contains(kv.VALUE1) && req.ActiveFlag == ActiveDelete.Yes && req.DeleteFlag == ActiveDelete.No
 
-                                  select new REQUIREMENTEXT
+                                  select new
                                   {
-                                      REQUIREMENTID = req.REQUIREMENTID,
-                                      REQUIREMENTTITLE = req.REQUIREMENTTITLE,
-                                      REQUIREMENTDESC = req.REQUIREMENTDESC,
-                                      REQUIREMENTCD = req.REQUIREMENTCD,
-                                      REQUIREMENTCT = req.REQUIREMENTCT,
-                                      REQUIREMENTUD = req.REQUIREMENTUD,
-                                      REQUIREMENTUT = req.REQUIREMENTUT,
-                                      REQUIREMENTMAXRATE = req.REQUIREMENTMAXRATE,
-                                      REQUIREMENTLOCCOUNTRY = req.REQUIREMENTLOCCOUNTRY,
-                                      REQUIREMENTLOCSTATE = req.REQUIREMENTLOCSTATE,
-                                      REQUIREMENTLOCCITY = req.REQUIREMENTLOCCITY,
-                                      REQUIREMENTHYBRIDTYPE = req.REQUIREMENTHYBRIDTYPE,
-                                      REQUIREMENTWN = req.REQUIREMENTWN,
-                                      REQUIREMENTCLIENT = req.REQUIREMENTCLIENT,
-                                      REQUIREMENTIMPLEMENTATION = req.REQUIREMENTIMPLEMENTATION,
-                                      REQUIREMENTLOCCITYNAME = cty.CITYNAME,
-                                      REQUIREMENTLOCSTATENAME = sta.STATENAME,
-                                      REQUIREMENTLOCCOUNTRYNAME = cnty.COUNTRYNAME,
-                                      REQUIREMENTWNNANME = wn.WORKNATURENAME,
-                                      REQUIREMENTHYBRIDTYPENAME = hbt.HYBRIDTYPENAME,
-                                      REQUIREMENTIMPLEMENTATIONNAME = imp.IMPLEMENTATIONNAME,
-                                      REQUIREMENTCLIENTNAME = cli.CLIENTNAME
+                                      Requirement = new REQUIREMENTEXT
+                                      {
+                                          REQUIREMENTID = req.REQUIREMENTID,
+                                          REQUIREMENTTITLE = req.REQUIREMENTTITLE,
+                                          REQUIREMENTDESC = req.REQUIREMENTDESC,
+                                          REQUIREMENTCD = req.REQUIREMENTCD,
+                                          REQUIREMENTCT = req.REQUIREMENTCT,
+                                          REQUIREMENTUD = req.REQUIREMENTUD,
+                                          REQUIREMENTUT = req.REQUIREMENTUT,
+                                          REQUIREMENTMAXRATE = req.REQUIREMENTMAXRATE,
+                                          REQUIREMENTLOCCOUNTRY = req.REQUIREMENTLOCCOUNTRY,
+                                          REQUIREMENTLOCSTATE = req.REQUIREMENTLOCSTATE,
+                                          REQUIREMENTLOCCITY = req.REQUIREMENTLOCCITY,
+                                          REQUIREMENTHYBRIDTYPE = req.REQUIREMENTHYBRIDTYPE,
+                                          REQUIREMENTWN = req.REQUIREMENTWN,
+                                          REQUIREMENTCLIENT = req.REQUIREMENTCLIENT,
+                                          REQUIREMENTIMPLEMENTATION = req.REQUIREMENTIMPLEMENTATION,
+                                          REQUIREMENTLOCCITYNAME = cty.CITYNAME,
+                                          REQUIREMENTLOCSTATENAME = sta.STATENAME,
+                                          REQUIREMENTLOCCOUNTRYNAME = cnty.COUNTRYNAME,
+                                          REQUIREMENTWNNANME = wn.WORKNATURENAME,
+                                          REQUIREMENTHYBRIDTYPENAME = hbt.HYBRIDTYPENAME,
+                                          REQUIREMENTIMPLEMENTATIONNAME = imp.IMPLEMENTATIONNAME,
+                                          REQUIREMENTCLIENTNAME = cli.CLIENTNAME
+                                      },
+                                      Visa = vis
                                   }).ToListAsync();
-                return reqs;
+                var result = reqs.GroupBy(x => x.Requirement)
+                             .Select(g => new ReqVisa
+                             {
+                                 RequiredVisaExt = g.Key,
+                                 VisasList = g.Select(x => x.Visa).ToList()
+                             }).ToList();
+                return result;
             }
             catch (Exception ex) { return null; }
         }
 
-        public async Task<List<REQUIREMENTEXT>> GetREQUIREMENTS()
+        public async Task<List<ReqVisa>> GetREQUIREMENTS()
         {
             try
             {
@@ -129,35 +141,48 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                   join cnty in _dbContext.COUNTRIES on req.REQUIREMENTLOCCOUNTRY equals cnty.COUNTRYID
                                   join sta in _dbContext.STATES on req.REQUIREMENTLOCSTATE equals sta.STATEID
                                   join cty in _dbContext.CITIES on req.REQUIREMENTLOCCITY equals cty.CITYID
+                                  join reV in _dbContext.REQUIREDVISAS on req.REQUIREMENTID equals reV.REQUIREMENTID
+                                  join vis in _dbContext.VISAS on reV.REQUIREDVISAID equals vis.VISAID
 
                                   where req.ActiveFlag == ActiveDelete.Yes && req.DeleteFlag == ActiveDelete.No
 
-                                  select new REQUIREMENTEXT
+                                  select new
                                   {
-                                      REQUIREMENTID = req.REQUIREMENTID,
-                                      REQUIREMENTTITLE = req.REQUIREMENTTITLE,
-                                      REQUIREMENTDESC = req.REQUIREMENTDESC,
-                                      REQUIREMENTCD = req.REQUIREMENTCD,
-                                      REQUIREMENTCT = req.REQUIREMENTCT,
-                                      REQUIREMENTUD = req.REQUIREMENTUD,
-                                      REQUIREMENTUT = req.REQUIREMENTUT,
-                                      REQUIREMENTMAXRATE = req.REQUIREMENTMAXRATE,
-                                      REQUIREMENTLOCCOUNTRY = req.REQUIREMENTLOCCOUNTRY,
-                                      REQUIREMENTLOCSTATE = req.REQUIREMENTLOCSTATE,
-                                      REQUIREMENTLOCCITY = req.REQUIREMENTLOCCITY,
-                                      REQUIREMENTHYBRIDTYPE = req.REQUIREMENTHYBRIDTYPE,
-                                      REQUIREMENTWN = req.REQUIREMENTWN,
-                                      REQUIREMENTCLIENT = req.REQUIREMENTCLIENT,
-                                      REQUIREMENTIMPLEMENTATION = req.REQUIREMENTIMPLEMENTATION,
-                                      REQUIREMENTLOCCITYNAME = cty.CITYNAME,
-                                      REQUIREMENTLOCSTATENAME = sta.STATENAME,
-                                      REQUIREMENTLOCCOUNTRYNAME = cnty.COUNTRYNAME,
-                                      REQUIREMENTWNNANME = wn.WORKNATURENAME,
-                                      REQUIREMENTHYBRIDTYPENAME = hbt.HYBRIDTYPENAME,
-                                      REQUIREMENTIMPLEMENTATIONNAME = imp.IMPLEMENTATIONNAME,
-                                      REQUIREMENTCLIENTNAME = cli.CLIENTNAME
+                                      Requirement = new REQUIREMENTEXT
+                                      {
+                                          REQUIREMENTID = req.REQUIREMENTID,
+                                          REQUIREMENTTITLE = req.REQUIREMENTTITLE,
+                                          REQUIREMENTDESC = req.REQUIREMENTDESC,
+                                          REQUIREMENTCD = req.REQUIREMENTCD,
+                                          REQUIREMENTCT = req.REQUIREMENTCT,
+                                          REQUIREMENTUD = req.REQUIREMENTUD,
+                                          REQUIREMENTUT = req.REQUIREMENTUT,
+                                          REQUIREMENTMAXRATE = req.REQUIREMENTMAXRATE,
+                                          REQUIREMENTLOCCOUNTRY = req.REQUIREMENTLOCCOUNTRY,
+                                          REQUIREMENTLOCSTATE = req.REQUIREMENTLOCSTATE,
+                                          REQUIREMENTLOCCITY = req.REQUIREMENTLOCCITY,
+                                          REQUIREMENTHYBRIDTYPE = req.REQUIREMENTHYBRIDTYPE,
+                                          REQUIREMENTWN = req.REQUIREMENTWN,
+                                          REQUIREMENTCLIENT = req.REQUIREMENTCLIENT,
+                                          REQUIREMENTIMPLEMENTATION = req.REQUIREMENTIMPLEMENTATION,
+                                          REQUIREMENTLOCCITYNAME = cty.CITYNAME,
+                                          REQUIREMENTLOCSTATENAME = sta.STATENAME,
+                                          REQUIREMENTLOCCOUNTRYNAME = cnty.COUNTRYNAME,
+                                          REQUIREMENTWNNANME = wn.WORKNATURENAME,
+                                          REQUIREMENTHYBRIDTYPENAME = hbt.HYBRIDTYPENAME,
+                                          REQUIREMENTIMPLEMENTATIONNAME = imp.IMPLEMENTATIONNAME,
+                                          REQUIREMENTCLIENTNAME = cli.CLIENTNAME
+                                      },
+                                      Visa = vis
                                   }).ToListAsync();
-                return reqs;
+                var result = reqs.GroupBy(x => x.Requirement)
+                             .Select(g => new ReqVisa
+                             {
+                                 RequiredVisaExt = g.Key,
+                                 VisasList = g.Select(x => x.Visa).ToList()
+                             }).ToList();
+                return result;
+
             }
             catch (Exception ex) { return null; }
         }
@@ -165,19 +190,19 @@ namespace ATSAPPBACKEND.Repositories.Classes
         public async Task<bool> UpdateREQUIREMENT(ReqVisa requirement)
         {
             KeyValue kv = new KeyValue();
-            kv.KEY1 = requirement.req.REQUIREMENTID;
+            kv.KEY1 = requirement.RequiredVisaExt.REQUIREMENTID;
             try
             {
                 var emp = await GetById(kv);
                 if (emp != null)
                 {
-                    requirement.req.REQUIREMENTUD = DateTime.Now;
-                    requirement.req.REQUIREMENTUT = DateTime.Now.TimeOfDay;
-                    _dbContext.Entry<REQUIREMENT>(requirement.req).State = EntityState.Modified;
+                    requirement.RequiredVisaExt.REQUIREMENTUD = DateTime.Now;
+                    requirement.RequiredVisaExt.REQUIREMENTUT = DateTime.Now.TimeOfDay;
+                    _dbContext.Entry<REQUIREMENT>(requirement.RequiredVisaExt).State = EntityState.Modified;
                     await _dbContext.SaveChangesAsync();
 
-                    var reqid = requirement.req.REQUIREMENTID;
-                    var sv = requirement.visas;
+                    var reqid = requirement.RequiredVisaExt.REQUIREMENTID;
+                    var sv = requirement.VisasList;
                     var rv = await _dbContext.REQUIREDVISAS.Where(x => x.REQUIREMENTID == reqid).ToListAsync();
 
                     var notmatchedfromold = rv.Where(x => !(sv.Select(y => y.VISAID).Contains(x.VISAID))).ToList();
@@ -201,7 +226,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
             catch (Exception ex) { return false; }
         }
 
-        private async Task<REQUIREMENTEXT> GetById(KeyValue kv)
+        private async Task<ReqVisa> GetById(KeyValue kv)
         {
             try
             {
@@ -213,35 +238,46 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                   join cnty in _dbContext.COUNTRIES on req.REQUIREMENTLOCCOUNTRY equals cnty.COUNTRYID
                                   join sta in _dbContext.STATES on req.REQUIREMENTLOCSTATE equals sta.STATEID
                                   join cty in _dbContext.CITIES on req.REQUIREMENTLOCCITY equals cty.CITYID
+                                  join reV in _dbContext.REQUIREDVISAS on req.REQUIREMENTID equals reV.REQUIREMENTID
+                                  join vis in _dbContext.VISAS on reV.REQUIREDVISAID equals vis.VISAID
 
                                   where req.REQUIREMENTID == kv.KEY1 && req.ActiveFlag == ActiveDelete.Yes && req.DeleteFlag == ActiveDelete.No
-
-                                  select new REQUIREMENTEXT
+                                  select new
                                   {
-                                      REQUIREMENTID = req.REQUIREMENTID,
-                                      REQUIREMENTTITLE = req.REQUIREMENTTITLE,
-                                      REQUIREMENTDESC = req.REQUIREMENTDESC,
-                                      REQUIREMENTCD = req.REQUIREMENTCD,
-                                      REQUIREMENTCT = req.REQUIREMENTCT,
-                                      REQUIREMENTUD = req.REQUIREMENTUD,
-                                      REQUIREMENTUT = req.REQUIREMENTUT,
-                                      REQUIREMENTMAXRATE = req.REQUIREMENTMAXRATE,
-                                      REQUIREMENTLOCCOUNTRY = req.REQUIREMENTLOCCOUNTRY,
-                                      REQUIREMENTLOCSTATE = req.REQUIREMENTLOCSTATE,
-                                      REQUIREMENTLOCCITY = req.REQUIREMENTLOCCITY,
-                                      REQUIREMENTHYBRIDTYPE = req.REQUIREMENTHYBRIDTYPE,
-                                      REQUIREMENTWN = req.REQUIREMENTWN,
-                                      REQUIREMENTCLIENT = req.REQUIREMENTCLIENT,
-                                      REQUIREMENTIMPLEMENTATION = req.REQUIREMENTIMPLEMENTATION,
-                                      REQUIREMENTLOCCITYNAME = cty.CITYNAME,
-                                      REQUIREMENTLOCSTATENAME = sta.STATENAME,
-                                      REQUIREMENTLOCCOUNTRYNAME = cnty.COUNTRYNAME,
-                                      REQUIREMENTWNNANME = wn.WORKNATURENAME,
-                                      REQUIREMENTHYBRIDTYPENAME = hbt.HYBRIDTYPENAME,
-                                      REQUIREMENTIMPLEMENTATIONNAME = imp.IMPLEMENTATIONNAME,
-                                      REQUIREMENTCLIENTNAME = cli.CLIENTNAME
-                                  }).FirstOrDefaultAsync();
-                return reqs;
+                                      Requirement = new REQUIREMENTEXT
+                                      {
+                                          REQUIREMENTID = req.REQUIREMENTID,
+                                          REQUIREMENTTITLE = req.REQUIREMENTTITLE,
+                                          REQUIREMENTDESC = req.REQUIREMENTDESC,
+                                          REQUIREMENTCD = req.REQUIREMENTCD,
+                                          REQUIREMENTCT = req.REQUIREMENTCT,
+                                          REQUIREMENTUD = req.REQUIREMENTUD,
+                                          REQUIREMENTUT = req.REQUIREMENTUT,
+                                          REQUIREMENTMAXRATE = req.REQUIREMENTMAXRATE,
+                                          REQUIREMENTLOCCOUNTRY = req.REQUIREMENTLOCCOUNTRY,
+                                          REQUIREMENTLOCSTATE = req.REQUIREMENTLOCSTATE,
+                                          REQUIREMENTLOCCITY = req.REQUIREMENTLOCCITY,
+                                          REQUIREMENTHYBRIDTYPE = req.REQUIREMENTHYBRIDTYPE,
+                                          REQUIREMENTWN = req.REQUIREMENTWN,
+                                          REQUIREMENTCLIENT = req.REQUIREMENTCLIENT,
+                                          REQUIREMENTIMPLEMENTATION = req.REQUIREMENTIMPLEMENTATION,
+                                          REQUIREMENTLOCCITYNAME = cty.CITYNAME,
+                                          REQUIREMENTLOCSTATENAME = sta.STATENAME,
+                                          REQUIREMENTLOCCOUNTRYNAME = cnty.COUNTRYNAME,
+                                          REQUIREMENTWNNANME = wn.WORKNATURENAME,
+                                          REQUIREMENTHYBRIDTYPENAME = hbt.HYBRIDTYPENAME,
+                                          REQUIREMENTIMPLEMENTATIONNAME = imp.IMPLEMENTATIONNAME,
+                                          REQUIREMENTCLIENTNAME = cli.CLIENTNAME
+                                      },
+                                      Visa = vis
+                                  }).ToListAsync();
+                var result = reqs.GroupBy(x => x.Requirement)
+                             .Select(g => new ReqVisa
+                             {
+                                 RequiredVisaExt = g.Key,
+                                 VisasList = g.Select(x => x.Visa).ToList()
+                             }).FirstOrDefault();
+                return result;
             }
             catch (Exception ex) { return null; }
         }

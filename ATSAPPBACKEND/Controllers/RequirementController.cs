@@ -17,7 +17,7 @@ namespace ATSAPPBACKEND.Controllers
         }
 
         [HttpPost("GetAllRequirements")]
-        public async Task<List<REQUIREMENTEXT>> GetAllRequirements()
+        public async Task<List<ReqVisa>> GetAllRequirements()
         {
             var requirements = await _requirementRepository.GetREQUIREMENTS();
             return requirements;

@@ -18,7 +18,7 @@ namespace ATSAPPBACKEND.Models
 
     public class ReqVisa
     {
-        public REQUIREMENTEXT req;
-        public List<VISA> visas;
+        public REQUIREMENTEXT RequiredVisaExt;
+        public List<VISA> VisasList;
     }
 }
