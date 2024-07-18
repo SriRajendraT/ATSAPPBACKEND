@@ -42,16 +42,12 @@ namespace ATSAPPBACKEND.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (submission.SUBMISSIONID > 0)
+                if (submission.SUBMISSIONID != 0)
                 {
                     return await _submissionRepository.UPDATESUBMISSION(submission);
                 }
                 else { return await _submissionRepository.ADDSUBMISSION(submission); }
-            }
-            else
-            {
-                return false;
-            }
+            }else{ return false; }
         }
 
         [HttpPost("DeleteSubmission")]

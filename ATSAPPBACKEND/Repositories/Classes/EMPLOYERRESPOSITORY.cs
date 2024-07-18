@@ -87,7 +87,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                            ActiveFlag = emp.ActiveFlag,
                                            DeleteFlag = emp.DeleteFlag,
                                            EMPLOYERCOMPANYNAME = ec.EMPLOYERCOMPANYNAME
-                                       }).ToListAsync();
+                                       }).OrderByDescending(x=>x.EMPLOYERID).ToListAsync();
                 return employers;
             }catch(Exception ex) { return null; }
         }
@@ -115,7 +115,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                     ActiveFlag = emp.ActiveFlag,
                                     DeleteFlag = emp.DeleteFlag,
                                     EMPLOYERCOMPANYNAME = ec.EMPLOYERCOMPANYNAME
-                                }).ToListAsync();
+                                }).OrderBy(x=>x.EMPLOYERCOMPANYNAME).ToListAsync();
                 return em;
             }
             catch(Exception ex) { return null; }

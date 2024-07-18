@@ -22,5 +22,42 @@ namespace ATSAPPBACKEND.Controllers
             var requirements = await _requirementRepository.GetREQUIREMENTS();
             return requirements;
         }
+
+        [HttpPost("GetRequirementById")]
+        public async Task<ReqVisa> GetRequirementById([FromBody] KeyValue kv)
+        {
+            var requirement = await _requirementRepository.GetREQUIREMENTBYID(kv);
+            return requirement;
+        }
+
+        [HttpPost("GetRequirementByName")]
+        public async Task<List<ReqVisa>> GetRequirementByName([FromBody] KeyValue kv)
+        {
+            var requirements = await _requirementRepository.GetREQUIREMENTBYNAME(kv);
+            return requirements;
+        }
+
+        [HttpPost("AddOrUpdateRequirement")]
+        public async Task<bool> AddOrUpdateRequirement([FromBody] ReqVisa requirement)
+        {
+            if(ModelState.IsValid)
+            {
+                if(requirement.RequiredVisaExt.REQUIREMENTID != 0)
+                {
+                    return await _requirementRepository.UpdateREQUIREMENT(requirement);
+                }
+                else
+                {
+                    return await _requirementRepository.AddREQUIREMENT(requirement);
+                }
+            }
+            else { return false; }
+        }
+
+        [HttpPost("DeleteRequirement")]
+        public async Task<bool> DeleteRequirement([FromBody] ReqVisa requirement)
+        {
+            return await _requirementRepository.DeleteREQUIREMENT(requirement);
+        }
     }
 }

@@ -95,7 +95,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                             CANDIDATELOCCITYNAME = cty.CITYNAME,
                                             CANDIDATETAXTERMNAME = tt.TAXTERMNAME,
                                             CANDIDATEEMPLOYERNAME = emp.EMPLOYERNAME
-                                        }).ToListAsync();
+                                        }).OrderByDescending(x=>x.CANDIDATEID).ToListAsync();
                 return candidates;
             }
             catch (Exception ex) { return null; }
@@ -140,7 +140,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                            CANDIDATELOCCITYNAME = cty.CITYNAME,
                                            CANDIDATETAXTERMNAME = tt.TAXTERMNAME,
                                            CANDIDATEEMPLOYERNAME = emp.EMPLOYERNAME
-                                       }).ToListAsync();
+                                       }).OrderBy(x=>x.CANDIDATEFULLNAME).ToListAsync();
                 return candidates;
             }
             catch (Exception ex) { return null; }

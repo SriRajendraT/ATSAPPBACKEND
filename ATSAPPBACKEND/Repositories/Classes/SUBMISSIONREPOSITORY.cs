@@ -116,7 +116,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                              REQUIREMENTNAME = req.REQUIREMENTTITLE,
                                              CANDIDATENAME = cand.CANDIDATEFULLNAME,
                                              SUBMISSIONSTATUSNAME = sus.SUBMISSIONSTATUSNAME
-                                         }).ToListAsync();
+                                         }).OrderByDescending(x=>x.SUBMISSIONCD).ToListAsync();
                 return submissions;
             }
             catch (Exception e) { return null; }

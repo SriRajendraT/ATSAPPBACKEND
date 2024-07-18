@@ -54,7 +54,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
         public async Task<List<CLIENT>> GetCLIENTS()
         {
             var clients = await _dbContext.CLIENTS.Where(x => x.ActiveFlag == ActiveDelete.Yes
-                                                           && x.DeleteFlag == ActiveDelete.No).ToListAsync();
+                                                           && x.DeleteFlag == ActiveDelete.No).OrderByDescending(x=>x.CLIENTID).ToListAsync();
             return clients;
         }
 
@@ -68,7 +68,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
         {
             var clients = await _dbContext.CLIENTS.Where(x => x.CLIENTNAME.Contains(kv.VALUE1) && 
                                                                 x.ActiveFlag == ActiveDelete.Yes && 
-                                                                x.DeleteFlag == ActiveDelete.No).ToListAsync();
+                                                                x.DeleteFlag == ActiveDelete.No).OrderBy(x=>x.CLIENTNAME).ToListAsync();
             return clients;
         }
 

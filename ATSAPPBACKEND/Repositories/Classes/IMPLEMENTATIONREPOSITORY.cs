@@ -54,14 +54,16 @@ namespace ATSAPPBACKEND.Repositories.Classes
         {
             var implementations = await _dbContext.IMPLEMENTATIONS.Where(x=>x.IMPLEMENTATIONNAME.Contains(kv.VALUE1) &&
                                                                             x.ActiveFlag==ActiveDelete.Yes &&
-                                                                            x.DeleteFlag==ActiveDelete.No).ToListAsync();
+                                                                            x.DeleteFlag==ActiveDelete.No)
+                                                                .OrderBy(x=>x.IMPLEMENTATIONNAME).ToListAsync();
             return implementations;
         }
 
         public async Task<List<IMPLEMENTATION>> GetIMPLEMENTATIONS()
         {
             var implementations = await _dbContext.IMPLEMENTATIONS.Where(x => x.ActiveFlag == ActiveDelete.Yes && 
-                                                                        x.DeleteFlag == ActiveDelete.No).ToListAsync();
+                                                                        x.DeleteFlag == ActiveDelete.No)
+                                                                        .OrderByDescending(x=>x.IMPLEMENTATIONID).ToListAsync();
             return implementations;
         }
 

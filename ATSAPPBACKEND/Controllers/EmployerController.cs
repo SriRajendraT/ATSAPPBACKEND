@@ -37,6 +37,7 @@ namespace ATSAPPBACKEND.Controllers
             return employers;
         }
 
+        [HttpPost("AddOrUpdateEmployer")]
         public async Task<bool> AddOrUpdateEmployer([FromBody] EMPLOYER employer)
         {
             if (ModelState.IsValid)
@@ -49,10 +50,10 @@ namespace ATSAPPBACKEND.Controllers
                 {
                     return await _employerRepository.AddEMPLOYER(employer);
                 }
-            }
-            else { return false; }
+            }else { return false; }
         }
 
+        [HttpPost("DeleteEmployer")]
         public async Task<bool> DeleteEmployer([FromBody] EMPLOYER employer)
         {
             return await _employerRepository.DeleteEMPLOYER(employer);

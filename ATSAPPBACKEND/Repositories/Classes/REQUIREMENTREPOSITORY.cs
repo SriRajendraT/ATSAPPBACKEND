@@ -117,7 +117,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                           REQUIREMENTCLIENTNAME = cli.CLIENTNAME
                                       },
                                       Visa = vis
-                                  }).ToListAsync();
+                                  }).OrderBy(x => x.Requirement.REQUIREMENTTITLE).ToListAsync();
                 var result = reqs.GroupBy(x => x.Requirement)
                              .Select(g => new ReqVisa
                              {
@@ -174,7 +174,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                           REQUIREMENTCLIENTNAME = cli.CLIENTNAME
                                       },
                                       Visa = vis
-                                  }).ToListAsync();
+                                  }).OrderByDescending(x => x.Requirement.REQUIREMENTID).ToListAsync();
                 var result = reqs.GroupBy(x => x.Requirement)
                              .Select(g => new ReqVisa
                              {

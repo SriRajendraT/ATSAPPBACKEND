@@ -50,13 +50,17 @@ namespace ATSAPPBACKEND.Repositories.Classes
 
         public async Task<List<EMPLOYERCOMPANY>> GetEMPLOYERCOMPANIES()
         {
-            var empComps = await _dbContext.EMPLOYERCOMPANIES.Where(x => x.ActiveFlag == ActiveDelete.Yes && x.DeleteFlag == ActiveDelete.No).ToListAsync();
+            var empComps = await _dbContext.EMPLOYERCOMPANIES.Where(x => x.ActiveFlag == ActiveDelete.Yes 
+                                                                    && x.DeleteFlag == ActiveDelete.No).
+                                                                    OrderByDescending(x=>x.EMPLOYERCOMPANYID).ToListAsync();
             return empComps;
         }
 
         public async Task<List<EMPLOYERCOMPANY>> GetEMPLOYERCOMPANIESBYNAME(KeyValue kv)
         {
-            var empComps = await _dbContext.EMPLOYERCOMPANIES.Where(x => x.EMPLOYERCOMPANYNAME.Contains(kv.VALUE1) && x.ActiveFlag == ActiveDelete.Yes && x.DeleteFlag == ActiveDelete.No).ToListAsync();
+            var empComps = await _dbContext.EMPLOYERCOMPANIES.Where(x => x.EMPLOYERCOMPANYNAME.Contains(kv.VALUE1) 
+                                                                    && x.ActiveFlag == ActiveDelete.Yes 
+                                                                    && x.DeleteFlag == ActiveDelete.No).OrderBy(x=>x.EMPLOYERCOMPANYNAME).ToListAsync();
             return empComps;
         }
 
@@ -86,7 +90,9 @@ namespace ATSAPPBACKEND.Repositories.Classes
 
         private async Task<EMPLOYERCOMPANY> GetByIdAsync(KeyValue kv)
         {
-            var empComp = await _dbContext.EMPLOYERCOMPANIES.FirstOrDefaultAsync(x => x.EMPLOYERCOMPANYID == kv.KEY1 && x.ActiveFlag == ActiveDelete.Yes && x.DeleteFlag == ActiveDelete.No);
+            var empComp = await _dbContext.EMPLOYERCOMPANIES.FirstOrDefaultAsync(x => x.EMPLOYERCOMPANYID == kv.KEY1 
+                                                                                && x.ActiveFlag == ActiveDelete.Yes 
+                                                                                && x.DeleteFlag == ActiveDelete.No);
             return empComp != null ? empComp : null;
         }
     }

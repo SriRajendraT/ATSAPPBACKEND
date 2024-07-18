@@ -16,13 +16,13 @@ namespace ATSAPPBACKEND.Repositories.Classes
 
         public async Task<List<CITY>> GetCITIES(KeyValue kv)
         {
-            var cities = await _dbContext.CITIES.Where(x => x.STATEID == kv.KEY1).ToListAsync();
+            var cities = await _dbContext.CITIES.Where(x => x.STATEID == kv.KEY1).OrderBy(x=>x.CITYNAME).ToListAsync();
             return cities;
         }
 
         public async Task<List<COUNTRY>> GetCOUNTRIES()
         {
-            var countries = await _dbContext.COUNTRIES.ToListAsync();
+            var countries = await _dbContext.COUNTRIES.OrderBy(x=>x.COUNTRYNAME).ToListAsync();
             return countries;
         }
 
@@ -40,7 +40,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
 
         public async Task<List<STATE>> GetSTATES(KeyValue kv)
         {
-            var states = await _dbContext.STATES.Where(x => x.COUNTRYID == kv.KEY1).ToListAsync();
+            var states = await _dbContext.STATES.Where(x => x.COUNTRYID == kv.KEY1).OrderBy(x=>x.STATENAME).ToListAsync();
             return states;
         }
 
