@@ -54,7 +54,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
         public async Task<List<CLIENT>> GetCLIENTS()
         {
             var clients = await _dbContext.CLIENTS.Where(x => x.ActiveFlag == ActiveDelete.Yes
-                                                           && x.DeleteFlag == ActiveDelete.No).OrderByDescending(x=>x.CLIENTID).ToListAsync();
+                                                           && x.DeleteFlag == ActiveDelete.No).OrderByDescending(x => x.CLIENTID).ToListAsync();
             return clients;
         }
 
@@ -66,24 +66,36 @@ namespace ATSAPPBACKEND.Repositories.Classes
 
         public async Task<List<CLIENT>> GetCLIENTSBYNAME(KeyValue kv)
         {
-            var clients = await _dbContext.CLIENTS.Where(x => x.CLIENTNAME.Contains(kv.VALUE1) && 
-                                                                x.ActiveFlag == ActiveDelete.Yes && 
-                                                                x.DeleteFlag == ActiveDelete.No).OrderBy(x=>x.CLIENTNAME).ToListAsync();
+            var clients = await _dbContext.CLIENTS.Where(x => x.CLIENTNAME.Contains(kv.VALUE1) &&
+                                                                x.ActiveFlag == ActiveDelete.Yes &&
+                                                                x.DeleteFlag == ActiveDelete.No).OrderBy(x => x.CLIENTNAME).ToListAsync();
             return clients;
         }
 
         public async Task<bool> UpdateCLIENT(CLIENT client)
         {
-            KeyValue kv = new KeyValue();
-            kv.KEY1 = client.CLIENTID;
-            var cli=await GetByIdAsync(kv);
-            if(cli != null)
+            try
             {
-                client.CLIENTUD = DateTime.Now;
-                client.CLIENTUT = DateTime.Now.TimeOfDay;
-                _dbContext.Entry<CLIENT>(client).State = EntityState.Modified;
-                return await _dbContext.SaveChangesAsync() > 0;
-            }else
+                KeyValue kv = new KeyValue();
+                kv.KEY1 = client.CLIENTID;
+                var cli = await GetByIdAsync(kv);
+                if (cli != null)
+                {
+                    client.ActiveFlag = ActiveDelete.Yes;
+                    client.DeleteFlag = ActiveDelete.No;
+                    client.CLIENTCD = cli.CLIENTCD;
+                    client.CLIENTCT = cli.CLIENTCT;
+                    client.CLIENTUD = DateTime.Now;
+                    client.CLIENTUT = DateTime.Now.TimeOfDay;
+                    _dbContext.Entry<CLIENT>(client).State = EntityState.Modified;
+                    return await _dbContext.SaveChangesAsync() > 0;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -91,10 +103,10 @@ namespace ATSAPPBACKEND.Repositories.Classes
 
         private async Task<CLIENT> GetByIdAsync(KeyValue kv)
         {
-            var client = await _dbContext.CLIENTS.FirstOrDefaultAsync(x => x.CLIENTID == kv.KEY1 
-                                                                        && x.ActiveFlag == ActiveDelete.Yes 
-                                                                        && x.DeleteFlag == ActiveDelete.No);
-            return client != null ? client : null ;
+            var client = await _dbContext.CLIENTS.AsNoTracking().FirstOrDefaultAsync(x => x.CLIENTID == kv.KEY1
+                                                                        && x.ActiveFlag != ActiveDelete.No
+                                                                        && x.DeleteFlag != ActiveDelete.Yes);
+            return client != null ? client : null;
         }
     }
 }

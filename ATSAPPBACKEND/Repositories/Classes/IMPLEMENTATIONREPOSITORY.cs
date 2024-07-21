@@ -24,24 +24,32 @@ namespace ATSAPPBACKEND.Repositories.Classes
                 implementation.IMPLEMENTATIONCT = DateTime.Now.TimeOfDay;
                 await _dbContext.AddAsync(implementation);
                 return await _dbContext.SaveChangesAsync() > 0;
-            }else { return false; }
+            }
+            else { return false; }
         }
 
         public async Task<bool> DeleteIMPLEMENTATION(IMPLEMENTATION implementation)
         {
-            KeyValue kv = new KeyValue();
-            kv.KEY1 = implementation.IMPLEMENTATIONID;
-            var impl = GetByIdAsync(kv);
-            if (impl != null)
+            try
             {
-                implementation.ActiveFlag = ActiveDelete.No;
-                implementation.DeleteFlag = ActiveDelete.Yes;
-                implementation.IMPLEMENTATIONUD = DateTime.Now;
-                implementation.IMPLEMENTATIONUT = DateTime.Now.TimeOfDay;
-                _dbContext.Entry<IMPLEMENTATION>(implementation).State = EntityState.Modified;
-                return await _dbContext.SaveChangesAsync() > 0;
+                KeyValue kv = new KeyValue();
+                kv.KEY1 = implementation.IMPLEMENTATIONID;
+                var impl = GetByIdAsync(kv);
+                if (impl != null)
+                {
+                    implementation.ActiveFlag = ActiveDelete.No;
+                    implementation.DeleteFlag = ActiveDelete.Yes;
+                    implementation.IMPLEMENTATIONUD = DateTime.Now;
+                    implementation.IMPLEMENTATIONUT = DateTime.Now.TimeOfDay;
+                    _dbContext.Entry<IMPLEMENTATION>(implementation).State = EntityState.Modified;
+                    return await _dbContext.SaveChangesAsync() > 0;
+                }
+                else { return false; }
             }
-            else { return false; }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public async Task<IMPLEMENTATION> GetIMPLEMENTATIONBYID(KeyValue kv)
@@ -52,18 +60,18 @@ namespace ATSAPPBACKEND.Repositories.Classes
 
         public async Task<List<IMPLEMENTATION>> GetIMPLEMENTATIONBYNAME(KeyValue kv)
         {
-            var implementations = await _dbContext.IMPLEMENTATIONS.Where(x=>x.IMPLEMENTATIONNAME.Contains(kv.VALUE1) &&
-                                                                            x.ActiveFlag==ActiveDelete.Yes &&
-                                                                            x.DeleteFlag==ActiveDelete.No)
-                                                                .OrderBy(x=>x.IMPLEMENTATIONNAME).ToListAsync();
+            var implementations = await _dbContext.IMPLEMENTATIONS.Where(x => x.IMPLEMENTATIONNAME.Contains(kv.VALUE1) &&
+                                                                            x.ActiveFlag == ActiveDelete.Yes &&
+                                                                            x.DeleteFlag == ActiveDelete.No)
+                                                                .OrderBy(x => x.IMPLEMENTATIONNAME).ToListAsync();
             return implementations;
         }
 
         public async Task<List<IMPLEMENTATION>> GetIMPLEMENTATIONS()
         {
-            var implementations = await _dbContext.IMPLEMENTATIONS.Where(x => x.ActiveFlag == ActiveDelete.Yes && 
+            var implementations = await _dbContext.IMPLEMENTATIONS.Where(x => x.ActiveFlag == ActiveDelete.Yes &&
                                                                         x.DeleteFlag == ActiveDelete.No)
-                                                                        .OrderByDescending(x=>x.IMPLEMENTATIONID).ToListAsync();
+                                                                        .OrderByDescending(x => x.IMPLEMENTATIONID).ToListAsync();
             return implementations;
         }
 
@@ -71,9 +79,13 @@ namespace ATSAPPBACKEND.Repositories.Classes
         {
             KeyValue kv = new KeyValue();
             kv.KEY1 = implementation.IMPLEMENTATIONID;
-            var impl = GetByIdAsync(kv);
+            var impl = await GetByIdAsync(kv);
             if (impl != null)
             {
+                implementation.ActiveFlag = ActiveDelete.Yes;
+                implementation.DeleteFlag = ActiveDelete.No;
+                implementation.IMPLEMENTATIONCD = impl.IMPLEMENTATIONCD;
+                implementation.IMPLEMENTATIONCT = impl.IMPLEMENTATIONCT;
                 implementation.IMPLEMENTATIONUD = DateTime.Now;
                 implementation.IMPLEMENTATIONUT = DateTime.Now.TimeOfDay;
                 _dbContext.Entry<IMPLEMENTATION>(implementation).State = EntityState.Modified;
@@ -84,7 +96,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
 
         private async Task<IMPLEMENTATION> GetByIdAsync(KeyValue kv)
         {
-            var implementation = await _dbContext.IMPLEMENTATIONS.Where(x => x.IMPLEMENTATIONID == kv.KEY1 &&
+            var implementation = await _dbContext.IMPLEMENTATIONS.AsNoTracking().Where(x => x.IMPLEMENTATIONID == kv.KEY1 &&
                                                                            x.ActiveFlag == ActiveDelete.Yes &&
                                                                            x.DeleteFlag == ActiveDelete.No).FirstOrDefaultAsync();
             return implementation != null ? implementation : null;
