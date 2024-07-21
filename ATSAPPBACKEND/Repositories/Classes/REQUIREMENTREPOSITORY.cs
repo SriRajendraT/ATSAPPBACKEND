@@ -154,9 +154,9 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                           REQUIREMENTTITLE = req.REQUIREMENTTITLE,
                                           REQUIREMENTDESC = req.REQUIREMENTDESC,
                                           REQUIREMENTCD = req.REQUIREMENTCD,
-                                          REQUIREMENTCT = req.REQUIREMENTCT,
+                                          REQUIREMENTCT = req.REQUIREMENTCT!,
                                           REQUIREMENTUD = req.REQUIREMENTUD,
-                                          REQUIREMENTUT = req.REQUIREMENTUT,
+                                          REQUIREMENTUT = req.REQUIREMENTUT!,
                                           REQUIREMENTMAXRATE = req.REQUIREMENTMAXRATE,
                                           REQUIREMENTLOCCOUNTRY = req.REQUIREMENTLOCCOUNTRY,
                                           REQUIREMENTLOCSTATE = req.REQUIREMENTLOCSTATE,
@@ -174,7 +174,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                           REQUIREMENTCLIENTNAME = cli.CLIENTNAME
                                       },
                                       Visa = vis
-                                  }).OrderByDescending(x => x.Requirement.REQUIREMENTID).ToListAsync();
+                                  }).OrderByDescending(x => x.Requirement.REQUIREMENTID).AsNoTracking().ToListAsync();
                 var result = reqs.GroupBy(x => x.Requirement)
                              .Select(g => new ReqVisa
                              {

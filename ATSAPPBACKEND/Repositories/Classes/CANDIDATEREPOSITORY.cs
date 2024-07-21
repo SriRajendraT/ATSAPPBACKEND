@@ -62,11 +62,12 @@ namespace ATSAPPBACKEND.Repositories.Classes
             {
                 var candidates = await (from can in _dbContext.CANDIDATES
                                         join gnd in _dbContext.GENDERS on can.CANDIDATEGENDER equals gnd.GENDERID
-                                        join cnty in _dbContext.COUNTRIES on can.CANDIDATELOCCOUNTRY equals cnty.COUNTRYID
-                                        join sta in _dbContext.STATES on can.CANDIDATELOCSTATE equals sta.STATEID
-                                        join cty in _dbContext.CITIES on can.CANDIDATELOCCITY equals cty.CITYID
+                                        join cnty in _dbContext.COUNTRIES on can.CANDIDATECOUNTRY equals cnty.COUNTRYID
+                                        join sta in _dbContext.STATES on can.CANDIDATESTATE equals sta.STATEID
+                                        join cty in _dbContext.CITIES on can.CANDIDATECITY equals cty.CITYID
                                         join tt in _dbContext.TAXTERMES on can.CANDIDATETAXTERM equals tt.TAXTERMID
                                         join emp in _dbContext.EMPLOYERS on can.CANDIDATEEMPLOYER equals emp.EMPLOYERID
+                                        join vsa in _dbContext.VISAS on can.CANDIDATEVISA equals vsa.VISAID
 
                                         where can.ActiveFlag == ActiveDelete.Yes && can.DeleteFlag == ActiveDelete.No
 
@@ -80,13 +81,14 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                             CANDIDATEUD = can.CANDIDATEUD,
                                             CANDIDATEEMAIL = can.CANDIDATEEMAIL,
                                             CANDIDATEPHONE = can.CANDIDATEPHONE,
-                                            CANDIDATELOCCOUNTRY = can.CANDIDATELOCCOUNTRY,
-                                            CANDIDATELOCSTATE = can.CANDIDATELOCSTATE,
-                                            CANDIDATELOCCITY = can.CANDIDATELOCCITY,
+                                            CANDIDATECOUNTRY = can.CANDIDATECOUNTRY,
+                                            CANDIDATESTATE = can.CANDIDATESTATE,
+                                            CANDIDATECITY = can.CANDIDATECITY,
                                             CANDIDATEADDRESS = can.CANDIDATEADDRESS,
                                             CANDIDATEGENDER = can.CANDIDATEGENDER,
                                             CANDIDATETAXTERM = can.CANDIDATETAXTERM,
                                             CANDIDATEEMPLOYER = can.CANDIDATEEMPLOYER,
+                                            CANDIDATEVISA = can.CANDIDATEVISA,
                                             VISADATEOFISSUE = can.VISADATEOFISSUE,
                                             VISAVAILDUPTO = can.VISAVAILDUPTO,
                                             CANDIDATEGENDERNAME = gnd.GENDERNAME,
@@ -94,8 +96,9 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                             CANDIDATELOCSTATENAME = sta.STATENAME,
                                             CANDIDATELOCCITYNAME = cty.CITYNAME,
                                             CANDIDATETAXTERMNAME = tt.TAXTERMNAME,
-                                            CANDIDATEEMPLOYERNAME = emp.EMPLOYERNAME
-                                        }).OrderByDescending(x=>x.CANDIDATEID).ToListAsync();
+                                            CANDIDATEEMPLOYERNAME = emp.EMPLOYERNAME,
+                                            CANDIDATEVISANAME = vsa.VISANAME
+                                        }).OrderByDescending(x=>x.CANDIDATEID).AsNoTracking().ToListAsync();
                 return candidates;
             }
             catch (Exception ex) { return null; }
@@ -107,9 +110,9 @@ namespace ATSAPPBACKEND.Repositories.Classes
             {
                 var candidates = await (from can in _dbContext.CANDIDATES
                                        join gnd in _dbContext.GENDERS on can.CANDIDATEGENDER equals gnd.GENDERID
-                                       join cnty in _dbContext.COUNTRIES on can.CANDIDATELOCCOUNTRY equals cnty.COUNTRYID
-                                       join sta in _dbContext.STATES on can.CANDIDATELOCSTATE equals sta.STATEID
-                                       join cty in _dbContext.CITIES on can.CANDIDATELOCCITY equals cty.CITYID
+                                       join cnty in _dbContext.COUNTRIES on can.CANDIDATECOUNTRY equals cnty.COUNTRYID
+                                       join sta in _dbContext.STATES on can.CANDIDATESTATE equals sta.STATEID
+                                       join cty in _dbContext.CITIES on can.CANDIDATECITY equals cty.CITYID
                                        join tt in _dbContext.TAXTERMES on can.CANDIDATETAXTERM equals tt.TAXTERMID
                                        join emp in _dbContext.EMPLOYERS on can.CANDIDATEEMPLOYER equals emp.EMPLOYERID
 
@@ -125,9 +128,9 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                            CANDIDATEUD = can.CANDIDATEUD,
                                            CANDIDATEEMAIL = can.CANDIDATEEMAIL,
                                            CANDIDATEPHONE = can.CANDIDATEPHONE,
-                                           CANDIDATELOCCOUNTRY = can.CANDIDATELOCCOUNTRY,
-                                           CANDIDATELOCSTATE = can.CANDIDATELOCSTATE,
-                                           CANDIDATELOCCITY = can.CANDIDATELOCCITY,
+                                           CANDIDATECOUNTRY = can.CANDIDATECOUNTRY,
+                                           CANDIDATESTATE = can.CANDIDATESTATE,
+                                           CANDIDATECITY = can.CANDIDATECITY,
                                            CANDIDATEADDRESS = can.CANDIDATEADDRESS,
                                            CANDIDATEGENDER = can.CANDIDATEGENDER,
                                            CANDIDATETAXTERM = can.CANDIDATETAXTERM,
@@ -171,9 +174,9 @@ namespace ATSAPPBACKEND.Repositories.Classes
             {
                 var candidate = await (from can in _dbContext.CANDIDATES
                                        join gnd in _dbContext.GENDERS on can.CANDIDATEGENDER equals gnd.GENDERID
-                                       join cnty in _dbContext.COUNTRIES on can.CANDIDATELOCCOUNTRY equals cnty.COUNTRYID
-                                       join sta in _dbContext.STATES on can.CANDIDATELOCSTATE equals sta.STATEID
-                                       join cty in _dbContext.CITIES on can.CANDIDATELOCCITY equals cty.CITYID
+                                       join cnty in _dbContext.COUNTRIES on can.CANDIDATECOUNTRY equals cnty.COUNTRYID
+                                       join sta in _dbContext.STATES on can.CANDIDATESTATE equals sta.STATEID
+                                       join cty in _dbContext.CITIES on can.CANDIDATECITY equals cty.CITYID
                                        join tt in _dbContext.TAXTERMES on can.CANDIDATETAXTERM equals tt.TAXTERMID
                                        join emp in _dbContext.EMPLOYERS on can.CANDIDATEEMPLOYER equals emp.EMPLOYERID
 
@@ -189,9 +192,9 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                            CANDIDATEUD = can.CANDIDATEUD,
                                            CANDIDATEEMAIL = can.CANDIDATEEMAIL,
                                            CANDIDATEPHONE = can.CANDIDATEPHONE,
-                                           CANDIDATELOCCOUNTRY = can.CANDIDATELOCCOUNTRY,
-                                           CANDIDATELOCSTATE = can.CANDIDATELOCSTATE,
-                                           CANDIDATELOCCITY = can.CANDIDATELOCCITY,
+                                           CANDIDATECOUNTRY = can.CANDIDATECOUNTRY,
+                                           CANDIDATESTATE = can.CANDIDATESTATE,
+                                           CANDIDATECITY = can.CANDIDATECITY,
                                            CANDIDATEADDRESS = can.CANDIDATEADDRESS,
                                            CANDIDATEGENDER = can.CANDIDATEGENDER,
                                            CANDIDATETAXTERM = can.CANDIDATETAXTERM,
