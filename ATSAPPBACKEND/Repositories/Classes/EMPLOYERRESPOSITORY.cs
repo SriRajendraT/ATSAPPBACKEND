@@ -130,6 +130,10 @@ namespace ATSAPPBACKEND.Repositories.Classes
                 var emp = await GetById(kv);
                 if (emp != null)
                 {
+                    employer.ActiveFlag = emp.ActiveFlag;
+                    employer.DeleteFlag = emp.DeleteFlag;
+                    employer.EMPLOYERCD = emp.EMPLOYERCD;
+                    employer.EMPLOYERCT = emp.EMPLOYERCT;
                     employer.EMPLOYERUD = DateTime.Now;
                     employer.EMPLOYERUT = DateTime.Now.TimeOfDay;
                     _dbContext.Entry<EMPLOYER>(employer).State = EntityState.Modified;
@@ -163,7 +167,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
                                     ActiveFlag = emp.ActiveFlag,
                                     DeleteFlag = emp.DeleteFlag,
                                     EMPLOYERCOMPANYNAME = ec.EMPLOYERCOMPANYNAME
-                                }).FirstOrDefaultAsync();
+                                }).AsNoTracking().FirstOrDefaultAsync();
                 return em;
             }
             catch(Exception ex) { return null; }

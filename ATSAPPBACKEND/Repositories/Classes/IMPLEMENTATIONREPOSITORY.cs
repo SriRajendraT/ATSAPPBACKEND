@@ -82,8 +82,8 @@ namespace ATSAPPBACKEND.Repositories.Classes
             var impl = await GetByIdAsync(kv);
             if (impl != null)
             {
-                implementation.ActiveFlag = ActiveDelete.Yes;
-                implementation.DeleteFlag = ActiveDelete.No;
+                implementation.ActiveFlag = impl.ActiveFlag;
+                implementation.DeleteFlag = impl.DeleteFlag;
                 implementation.IMPLEMENTATIONCD = impl.IMPLEMENTATIONCD;
                 implementation.IMPLEMENTATIONCT = impl.IMPLEMENTATIONCT;
                 implementation.IMPLEMENTATIONUD = DateTime.Now;

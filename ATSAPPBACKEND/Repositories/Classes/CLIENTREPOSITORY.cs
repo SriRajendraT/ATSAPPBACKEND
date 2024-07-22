@@ -81,8 +81,8 @@ namespace ATSAPPBACKEND.Repositories.Classes
                 var cli = await GetByIdAsync(kv);
                 if (cli != null)
                 {
-                    client.ActiveFlag = ActiveDelete.Yes;
-                    client.DeleteFlag = ActiveDelete.No;
+                    client.ActiveFlag = cli.ActiveFlag;
+                    client.DeleteFlag = cli.DeleteFlag;
                     client.CLIENTCD = cli.CLIENTCD;
                     client.CLIENTCT = cli.CLIENTCT;
                     client.CLIENTUD = DateTime.Now;
@@ -104,8 +104,8 @@ namespace ATSAPPBACKEND.Repositories.Classes
         private async Task<CLIENT> GetByIdAsync(KeyValue kv)
         {
             var client = await _dbContext.CLIENTS.AsNoTracking().FirstOrDefaultAsync(x => x.CLIENTID == kv.KEY1
-                                                                        && x.ActiveFlag != ActiveDelete.No
-                                                                        && x.DeleteFlag != ActiveDelete.Yes);
+                                                                        && x.ActiveFlag == ActiveDelete.Yes
+                                                                        && x.DeleteFlag == ActiveDelete.No);
             return client != null ? client : null;
         }
     }

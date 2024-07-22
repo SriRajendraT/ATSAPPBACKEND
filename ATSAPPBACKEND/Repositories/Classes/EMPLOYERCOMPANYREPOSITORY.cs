@@ -17,6 +17,8 @@ namespace ATSAPPBACKEND.Repositories.Classes
         {
             if (employeeCompany != null)
             {
+                employeeCompany.ActiveFlag = ActiveDelete.Yes;
+                employeeCompany.DeleteFlag = ActiveDelete.No;
                 employeeCompany.EMPLOYERCOMPANYCT = DateTime.Now.TimeOfDay;
                 employeeCompany.EMPLOYERCOMPANYCD = DateTime.Today;
                 await _dbContext.AddAsync(employeeCompany);
@@ -77,6 +79,10 @@ namespace ATSAPPBACKEND.Repositories.Classes
             var empComp = await GetByIdAsync(kv);
             if (empComp != null)
             {
+                employeeCompany.ActiveFlag = empComp.ActiveFlag;
+                employeeCompany.DeleteFlag = empComp.DeleteFlag;
+                employeeCompany.EMPLOYERCOMPANYCD = empComp.EMPLOYERCOMPANYCD;
+                employeeCompany.EMPLOYERCOMPANYCT = empComp.EMPLOYERCOMPANYCT;
                 employeeCompany.EMPLOYERCOMPANYUT = DateTime.Now.TimeOfDay;
                 employeeCompany.EMPLOYERCOMPANYUD = DateTime.Today;
                 _dbContext.Entry<EMPLOYERCOMPANY>(employeeCompany).State = EntityState.Modified;
@@ -90,7 +96,7 @@ namespace ATSAPPBACKEND.Repositories.Classes
 
         private async Task<EMPLOYERCOMPANY> GetByIdAsync(KeyValue kv)
         {
-            var empComp = await _dbContext.EMPLOYERCOMPANIES.FirstOrDefaultAsync(x => x.EMPLOYERCOMPANYID == kv.KEY1 
+            var empComp = await _dbContext.EMPLOYERCOMPANIES.AsNoTracking().FirstOrDefaultAsync(x => x.EMPLOYERCOMPANYID == kv.KEY1 
                                                                                 && x.ActiveFlag == ActiveDelete.Yes 
                                                                                 && x.DeleteFlag == ActiveDelete.No);
             return empComp != null ? empComp : null;
